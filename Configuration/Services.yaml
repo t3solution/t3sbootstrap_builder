@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  T3SBS\T3sbootstrapBuilder\:
+    resource: '../Classes/*'
+
+  T3SBS\T3sbootstrapBuilder\Controller\BuilderModuleController:
+    public: true
+
+  T3SBS\T3sbootstrapBuilder\Controller\AjaxController:
+    public: true
+
+  T3SBS\T3sbootstrapBuilder\Service\BootswatchPresetService:
+    arguments:
+      $presetPath: 'EXT:t3sbootstrap_builder/Resources/Public/Presets/'

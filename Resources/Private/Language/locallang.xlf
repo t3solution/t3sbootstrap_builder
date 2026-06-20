@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="messages" date="2025-01-01T00:00:00Z" product-name="t3sbootstrap_builder">
+    <body>
+
+      <!-- Index page -->
+      <trans-unit id="index.welcome"><source>Welcome to the Bootstrap Builder</source></trans-unit>
+      <trans-unit id="index.lead"><source>Here you design your site's Bootstrap theme – without writing SCSS by hand. Pick colors, fonts, spacing and component styles in the editor, see the result instantly in the preview and publish it with one click.</source></trans-unit>
+      <trans-unit id="index.intro"><source>You can start from one of the bundled Bootswatch presets and adapt it to your needs, or build your theme entirely yourself. The SCSS compilation is handled in the background by EXT:t3sbootstrap – you don't have to worry about it.</source></trans-unit>
+      <trans-unit id="index.howto.title"><source>How it works:</source></trans-unit>
+      <trans-unit id="index.howto.step1"><source>Select the site whose theme you want to edit below.</source></trans-unit>
+      <trans-unit id="index.howto.step2"><source>Adjust colors and variables in the editor – with &lt;em&gt;Preview&lt;/em&gt; you can test safely, without changing the frontend.</source></trans-unit>
+      <trans-unit id="index.howto.step3"><source>With &lt;em&gt;Publish&lt;/em&gt; you take your theme live, and with &lt;em&gt;Export SCSS&lt;/em&gt; you download it as a ZIP.</source></trans-unit>
+      <trans-unit id="index.warning.title"><source>Important note:</source></trans-unit>
+      <trans-unit id="index.warning.body"><source>While you use the Bootstrap Builder, you should no longer edit the SCSS fields directly in EXT:t3sbootstrap (T3SB Config). The builder is the single source for these values and fully overwrites the SCSS files on every publish. The option to edit this data in EXT:t3sbootstrap is therefore disabled – use the fields here in the builder instead.</source></trans-unit>
+      <trans-unit id="index.sites.title"><source>Your sites</source></trans-unit>
+      <trans-unit id="index.sites.intro"><source>Choose a site to design its Bootstrap theme:</source></trans-unit>
+      <trans-unit id="index.table.site"><source>Site</source></trans-unit>
+      <trans-unit id="index.table.preset"><source>Preset</source></trans-unit>
+      <trans-unit id="index.table.status"><source>Status</source></trans-unit>
+      <trans-unit id="index.status.configured"><source>Configured</source></trans-unit>
+      <trans-unit id="index.status.notconfigured"><source>Not set up yet</source></trans-unit>
+      <trans-unit id="index.action.edit"><source>Edit</source></trans-unit>
+      <trans-unit id="index.action.setup"><source>Set up theme</source></trans-unit>
+      <trans-unit id="index.tip"><source>Tip: Your changes are saved and pre-filled again when you reopen. A backup is created automatically before every publish – you'll find it in typo3conf/ext/t3sb_package/Resources/Public/T3SB-SCSS/ as file _&lt;timestamp&gt;-custom-variables-&lt;id&gt;.scss.</source></trans-unit>
+
+      <!-- Edit page -->
+      <trans-unit id="edit.theme"><source>Theme</source></trans-unit>
+      <trans-unit id="edit.back"><source>Back</source></trans-unit>
+      <trans-unit id="edit.info"><source>Pick a &lt;strong&gt;Bootswatch preset&lt;/strong&gt; below as a starting point and adapt it to your needs – or build your theme entirely yourself. With &lt;em&gt;Preview&lt;/em&gt; you test changes safely, with &lt;em&gt;Publish&lt;/em&gt; you take them live.</source></trans-unit>
+      <trans-unit id="edit.link.bootswatch"><source>View Bootswatch presets</source></trans-unit>
+      <trans-unit id="edit.link.sass"><source>Bootstrap SASS variables</source></trans-unit>
+      <trans-unit id="edit.preset.label"><source>Bootswatch preset (base)</source></trans-unit>
+      <trans-unit id="edit.preset.load"><source>Load preset values</source></trans-unit>
+      <trans-unit id="edit.preset.none"><source>– none –</source></trans-unit>
+      <trans-unit id="edit.preset.hint"><source>Changing the preset pre-fills the fields below. Your own changes stay on top.</source></trans-unit>
+      <trans-unit id="edit.customscss.label"><source>Additional custom SCSS (after Bootstrap)</source></trans-unit>
+      <trans-unit id="edit.btn.preview"><source>Preview</source></trans-unit>
+      <trans-unit id="edit.btn.publish"><source>Publish</source></trans-unit>
+      <trans-unit id="edit.btn.export"><source>Export SCSS (.zip)</source></trans-unit>
+      <trans-unit id="edit.spinner.preview"><source>Rendering preview …</source></trans-unit>
+      <trans-unit id="edit.tab.components"><source>Components</source></trans-unit>
+      <trans-unit id="edit.tab.frontend"><source>Frontend</source></trans-unit>
+      <trans-unit id="edit.open"><source>Open</source></trans-unit>
+      <trans-unit id="edit.nocss"><source>No compiled CSS yet.</source></trans-unit>
+      <trans-unit id="edit.nocss.hint"><source>Click “Preview” or “Publish” once. The preview shows your freshly compiled theme CSS.</source></trans-unit>
+      <trans-unit id="edit.spinner.frontend"><source>Loading frontend …</source></trans-unit>
+      <trans-unit id="edit.frontend.nourl"><source>The frontend URL could not be determined for this site.</source></trans-unit>
+      <trans-unit id="edit.confirm.publish"><source>Really publish the theme? The changes will go live on the frontend.</source></trans-unit>
+
+      <!-- Flash messages -->
+      <trans-unit id="flash.preview.updated"><source>Preview updated. The frontend is unchanged.</source></trans-unit>
+      <trans-unit id="flash.preview.title"><source>Preview</source></trans-unit>
+      <trans-unit id="flash.preview.error"><source>Preview error</source></trans-unit>
+      <trans-unit id="flash.published"><source>Published to frontend and compiled. Preview updated.</source></trans-unit>
+      <trans-unit id="flash.published.title"><source>Published</source></trans-unit>
+      <trans-unit id="flash.datahandler.error"><source>DataHandler errors</source></trans-unit>
+      <trans-unit id="flash.config.missing.body"><source>No t3sbootstrap config record found on the root page. Please create one first.</source></trans-unit>
+      <trans-unit id="flash.config.missing.title"><source>Missing config</source></trans-unit>
+      <trans-unit id="flash.nocss.body"><source>Theme saved, but no CSS was compiled. Ensure "customScss" is enabled in EXT:t3sbootstrap (CDN disabled) and the Bootstrap SCSS sources exist. The CSS will also be built on the next frontend request.</source></trans-unit>
+      <trans-unit id="flash.nocss.title"><source>Published (no CSS yet)</source></trans-unit>
+      <trans-unit id="flash.export.empty"><source>No saved theme to export.</source></trans-unit>
+      <trans-unit id="flash.export.empty.title"><source>Nothing to export</source></trans-unit>
+
+    </body>
+  </file>
+</xliff>

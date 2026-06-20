@@ -1,0 +1,115 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module"/>
+<f:section name="Content">
+    <f:asset.css identifier="bb-css" href="EXT:t3sbootstrap_builder/Resources/Public/Css/builder.css"/>
+    <f:asset.script identifier="bb-js" src="EXT:t3sbootstrap_builder/Resources/Public/JavaScript/builder.js"/>
+
+    <div class="bb-toolbar">
+        <h1><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.theme"/>: {site.identifier}</h1>
+        <f:link.action action="index" class="btn btn-default btn-sm">&larr; <f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.back"/></f:link.action>
+    </div>
+
+    <div class="bb-infobox">
+        <p><f:transform.html><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.info"/></f:transform.html></p>
+        <p class="bb-infobox-links">
+            <a href="https://bootswatch.com/" target="_blank" rel="noopener">&#8599; <f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.link.bootswatch"/></a>
+            <span class="bb-sep">&#183;</span>
+            <a href="https://getbootstrap.com/docs/5.3/customize/sass/" target="_blank" rel="noopener">&#8599; <f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.link.sass"/></a>
+        </p>
+    </div>
+
+    <div class="bb-presetpicker">
+        <label><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.label"/></label>
+        <div class="bb-preset-row" data-preset-values="{presetValuesJson -> f:format.htmlspecialchars()}">
+            <f:form.select name="basePresetPicker" value="{selectedPreset}" options="{presets}" prependOptionLabel="{f:translate(key:'LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.none')}" prependOptionValue="" class="form-select" additionalAttributes="{id: 'bb-preset-select'}"/>
+            <button type="button" class="btn btn-default" id="bb-preset-load"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.load"/></button>
+        </div>
+        <small class="text-muted"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.hint"/></small>
+    </div>
+
+    <f:form action="apply" arguments="{siteIdentifier: site.identifier}" id="bb-form" additionalAttributes="{data-ajax-preview-url: ajaxPreviewUrl, data-site: site.identifier}">
+        <f:form.hidden name="basePreset" value="{selectedPreset}"/>
+        <f:form.hidden name="intent" value="publish" additionalAttributes="{id: 'bb-intent'}"/>
+        <div class="bb-layout">
+            <div class="bb-editor">
+
+                <f:for each="{groups}" as="vars" key="group" iteration="it">
+                    <f:if condition="{it.isFirst}">
+                        <f:then><details class="bb-group" open><summary>{group}</summary></f:then>
+                        <f:else><details class="bb-group"><summary>{group}</summary></f:else>
+                    </f:if>
+                        <f:for each="{vars}" as="var">
+                            <div class="form-group bb-var" data-type="{var.type}">
+                                <f:if condition="{var.type} != 'boolean'">
+                                    <label for="bb-{var.key}">{var.label} <code>${var.key}</code></label>
+                                </f:if>
+                                <f:render partial="Variables/Field" arguments="{var: var, value: var.value}"/>
+                            </div>
+                        </f:for>
+                    </details>
+                </f:for>
+
+                <div class="form-group">
+                    <label><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.customscss.label"/></label>
+                    <f:form.textarea name="customScss" value="{theme.customScss}" rows="6" class="form-control bb-mono"/>
+                </div>
+            </div>
+
+            <div class="bb-actionbar">
+                <button type="submit" class="btn btn-default" id="bb-btn-preview"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.btn.preview"/></button>
+                <button type="submit" class="btn btn-primary" id="bb-btn-publish" data-confirm="{f:translate(key:'LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.confirm.publish')}"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.btn.publish"/></button>
+                <button type="submit" class="btn btn-default" id="bb-btn-export"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.btn.export"/></button>
+            </div>
+
+            <div class="bb-preview">
+                <div id="bb-preview-spinner" class="bb-preview-spinner bb-hidden">
+                    <span class="bb-spinner"></span>
+                    <span><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.spinner.preview"/></span>
+                </div>
+                <div class="bb-preview-bar">
+                    <div class="bb-preview-tabs">
+                        <button type="button" class="bb-tab active" data-tab="components"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.tab.components"/></button>
+                        <button type="button" class="bb-tab" data-tab="frontend"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.tab.frontend"/></button>
+                    </div>
+                    <f:if condition="{frontendUrl}">
+                        <a href="{frontendUrl}" target="_blank" rel="noopener" class="bb-open-tab">↗ <f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.open"/></a>
+                    </f:if>
+                </div>
+
+                <div class="bb-tabpane" data-pane="components">
+                    <f:if condition="{compiledCssUrl}">
+                        <f:then>
+                            <div class="bb-resize" id="bb-resize">
+                                <iframe id="bb-preview-frame" title="Component preview" src="about:blank" data-css-url="{compiledCssUrl}" data-js-url="{f:uri.resource(path:'JavaScript/vendor/bootstrap.bundle.min.js', extensionName:'T3sbootstrapBuilder')}"></iframe>
+                            </div>
+                        </f:then>
+                        <f:else>
+                            <div class="bb-preview-empty">
+                                <p><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.nocss"/></p>
+                                <p><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.nocss.hint"/></p>
+                            </div>
+                        </f:else>
+                    </f:if>
+                </div>
+
+                <div class="bb-tabpane bb-hidden" data-pane="frontend">
+                    <f:if condition="{frontendUrl}">
+                        <f:then>
+                            <div class="bb-frontend-wrap">
+                                <div id="bb-frontend-spinner" class="bb-frontend-spinner bb-hidden">
+                                    <span class="bb-spinner"></span>
+                                    <span><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.spinner.frontend"/></span>
+                                </div>
+                                <iframe id="bb-frontend-frame" title="Frontend preview" data-frontend-url="{frontendUrl}" data-preview-css="{compiledCssUrl}" src="about:blank"></iframe>
+                            </div>
+                        </f:then>
+                        <f:else>
+                            <div class="bb-preview-empty"><p><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.frontend.nourl"/></p></div>
+                        </f:else>
+                    </f:if>
+                </div>
+            </div>
+        </div>
+    </f:form>
+</f:section>
+</html>

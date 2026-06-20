@@ -1,0 +1,84 @@
+.bb-toolbar{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem}
+.bb-toolbar h1{margin:0;margin-right:auto;font-size:1.25rem}
+.bb-layout{display:grid;grid-template-columns:420px 1fr;gap:1.5rem;align-items:start}
+.bb-editor{max-height:calc(100vh - 90px);overflow:auto;scrollbar-gutter:stable;padding-right:.5rem}
+.bb-group{border:1px solid var(--typo3-component-border-color,#ccc);border-radius:6px;padding:.75rem 1rem;margin-bottom:1rem}
+.bb-group legend{font-weight:600;font-size:.9rem;width:auto;padding:0 .4rem}
+.bb-group>summary{font-weight:600;font-size:.95rem;cursor:pointer;list-style:revert;user-select:none;padding:.15rem 0}
+.bb-group>summary:hover{opacity:.85}
+.bb-group[open]>summary{margin-bottom:.75rem;border-bottom:1px solid var(--typo3-component-border-color,#ccc);padding-bottom:.5rem}
+.bb-var{margin-bottom:.6rem}
+.bb-var label{display:block;font-size:.8rem;margin-bottom:.2rem}
+.bb-var code{opacity:.6;font-size:.75rem}
+.bb-color-row{display:flex;align-items:center;gap:.5rem}
+.bb-color-row .bb-color{flex:1 1 auto;min-width:0}
+.bb-color-row .bb-color-ref{flex:0 0 auto;width:auto;max-width:8rem}
+.bb-color-picker{width:38px;height:38px;padding:2px;border:1px solid var(--typo3-component-border-color,#ccc);border-radius:6px;background:#fff;cursor:pointer;flex:0 0 auto}
+.bb-mono{font-family:ui-monospace,Menlo,monospace;font-size:.8rem}
+.bb-preview{position:sticky;top:1rem;grid-column:2;grid-row:1 / span 2}
+.bb-resize{position:relative;resize:both;overflow:auto;min-height:300px;min-width:320px;height:calc(100vh - 90px);border:1px solid var(--typo3-component-border-color,#ccc);border-radius:6px;background:transparent}
+#bb-preview-frame{display:block;width:100%;height:100%;border:0;border-radius:6px;background:transparent}
+.bb-resize.bb-resizing #bb-preview-frame{pointer-events:none}
+.bb-preview-spinner{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;margin-top:-50px;font-size:.85rem;color:#333;transition:opacity .2s ease}
+.bb-preview-spinner.bb-hidden{display:none}
+.bb-spinner{width:20px;height:20px;border:3px solid rgba(0,0,0,.15);border-top-color:#0d6efd;border-radius:50%;animation:bb-spin .7s linear infinite}
+@keyframes bb-spin{to{transform:rotate(360deg)}}
+.bb-preview-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;font-size:.8rem;opacity:.8}
+.bb-preview-tabs{display:flex;gap:.25rem}
+.bb-tab{border:1px solid var(--typo3-component-border-color,#ccc);background:transparent;color:inherit;font-size:.8rem;padding:.2rem .8rem;border-radius:6px;cursor:pointer}
+.bb-tab.active{background:var(--typo3-component-primary-color,#0d6efd);color:#fff;border-color:transparent}
+.bb-open-tab{font-size:.8rem;text-decoration:none;opacity:.9}
+.bb-open-tab:hover{opacity:1;text-decoration:underline}
+#bb-frontend-frame{width:100%;height:calc(100vh - 90px);border:1px solid var(--typo3-component-border-color,#ccc);border-radius:6px;background:#fff}
+.bb-tabpane.bb-hidden{display:none}
+.bb-frontend-wrap{position:relative}
+.bb-frontend-spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:.6rem;background:rgba(255,255,255,.9);border-radius:6px;font-size:.9rem;color:#333;z-index:3}
+.bb-frontend-spinner.bb-hidden{display:none}
+.bb-actionbar{position:sticky;bottom:0;grid-column:1;align-self:end;display:flex;flex-direction:column;gap:1rem;padding:.75rem calc(15px + .5rem) .75rem 0;background:linear-gradient(to top,var(--typo3-component-bg,#1e1e2e) 70%,transparent);z-index:5}
+.bb-actionbar .btn{width:100%}
+.bb-presetpicker{margin-bottom:1rem;max-width:420px;padding-right:calc(15px + .5rem);box-sizing:border-box}
+.bb-presetpicker label{display:block;font-weight:600;margin-bottom:.3rem}
+.bb-presetpicker small{display:block;margin-top:.3rem;opacity:.7}
+.bb-preset-row{display:flex;gap:.5rem;align-items:center}
+.bb-preset-row .form-select{flex:1}
+.bb-preset-row .btn{white-space:nowrap}
+.bb-preview-empty{padding:1.5rem;border:1px dashed var(--typo3-component-border-color,#ccc);border-radius:6px;font-size:.85rem;opacity:.8}
+.bb-preview-empty code{font-size:.8rem}
+
+/* Editor top info box with hints and Bootswatch links */
+.bb-infobox{border:1px solid var(--typo3-component-border-color,#ccc);border-left:4px solid var(--typo3-component-primary-color,#0d6efd);background:rgba(13,110,253,.05);border-radius:6px;padding:.75rem 1rem;margin:0 0 1rem;font-size:.9rem}
+.bb-infobox p{margin:0 0 .4rem}
+.bb-infobox p:last-child{margin-bottom:0}
+.bb-infobox-links a{text-decoration:none;font-weight:600}
+.bb-infobox-links a:hover{text-decoration:underline}
+.bb-infobox-links .bb-sep{margin:0 .5rem;opacity:.5}
+
+/* Boolean switches in Options & Toggles */
+.bb-switch{padding-left:2.8em;margin:.35rem 0}
+.bb-switch .form-check-input{width:2.2em;height:1.15em;margin-left:-2.8em;cursor:pointer}
+.bb-switch .form-check-label{cursor:pointer;font-size:.85rem;opacity:.9}
+.bb-switch .form-check-input:checked{background-color:var(--typo3-component-primary-color,#0d6efd);border-color:var(--typo3-component-primary-color,#0d6efd)}
+
+/* Accordion body & custom-SCSS field: a touch lighter (dark mode) / darker (light mode) */
+@media (prefers-color-scheme: light) {
+  .bb-group[open]{background:rgba(0,0,0,.035)}
+  .bb-mono{background:rgba(0,0,0,.035)}
+}
+@media (prefers-color-scheme: dark) {
+  .bb-group[open]{background:rgba(255,255,255,.04)}
+  .bb-mono{background:rgba(255,255,255,.04)}
+}
+.bb-group[open]{padding-top:.75rem}
+
+/* Preview button: subtle green */
+#bb-btn-preview{background:#5a9b6b;border-color:#5a9b6b;color:#fff}
+#bb-btn-preview:hover{background:#4e8a5d;border-color:#4e8a5d;color:#fff}
+
+/* Preset picker spans the same width as the accordion column */
+.bb-presetpicker{max-width:420px}
+
+/* Preview/Publish/Export buttons span the full accordion column width (already width:100% via .bb-actionbar .btn) */
+
+/* Export button: light grey */
+#bb-btn-export{background:#e9ecef;border-color:#ced4da;color:#343a40}
+#bb-btn-export:hover{background:#dde1e5;border-color:#adb5bd;color:#212529}
