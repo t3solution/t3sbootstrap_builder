@@ -1,0 +1,54 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Module"/>
+<f:section name="Content">
+
+    <h1><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.welcome"/></h1>
+
+    <p class="lead"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.lead"/></p>
+
+    <p><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.intro"/></p>
+
+    <div class="callout callout-info" style="border-left:4px solid var(--typo3-component-primary-color,#0d6efd);padding:.75rem 1rem;background:rgba(13,110,253,.06);border-radius:6px;margin:1rem 0">
+        <strong><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.howto.title"/></strong>
+        <ol style="margin:.5rem 0 0;padding-left:1.25rem">
+            <li><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.howto.step1"/></li>
+            <li><f:transform.html><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.howto.step2"/></f:transform.html></li>
+            <li><f:transform.html><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.howto.step3"/></f:transform.html></li>
+        </ol>
+    </div>
+
+    <div class="callout callout-warning" style="border-left:4px solid #f0ad4e;padding:.75rem 1rem;background:rgba(240,173,78,.1);border-radius:6px;margin:1rem 0">
+        <strong><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.warning.title"/></strong>
+        <f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.warning.body"/>
+    </div>
+
+    <h2 style="margin-top:1.5rem"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.sites.title"/></h2>
+    <p><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.sites.intro"/></p>
+
+    <table class="table table-striped">
+        <thead><tr><th><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.table.site"/></th><th><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.table.preset"/></th><th><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.table.status"/></th><th></th></tr></thead>
+        <tbody>
+            <f:for each="{sites}" as="site">
+                <tr>
+                    <td>{site.identifier}</td>
+                    <td><f:if condition="{themes.{site.identifier}}"><f:then>{themes.{site.identifier}.basePreset}</f:then><f:else><span class="text-muted">&#8211;</span></f:else></f:if></td>
+                    <td>
+                        <f:if condition="{themes.{site.identifier}}">
+                            <f:then><span class="badge" style="background:#28a745;color:#ffffff;padding:.3em .6em"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.status.configured"/></span></f:then>
+                            <f:else><span class="text-muted"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.status.notconfigured"/></span></f:else>
+                        </f:if>
+                    </td>
+                    <td>
+                        <f:link.action action="edit" arguments="{siteIdentifier: site.identifier}" class="btn btn-primary btn-sm">
+                            <f:if condition="{themes.{site.identifier}}"><f:then><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.action.edit"/></f:then><f:else><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.action.setup"/></f:else></f:if>
+                        </f:link.action>
+                    </td>
+                </tr>
+            </f:for>
+        </tbody>
+    </table>
+
+    <p class="text-muted" style="font-size:.85rem;margin-top:1rem"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:index.tip"/></p>
+
+</f:section>
+</html>
