@@ -73,6 +73,9 @@ Flush caches:
 php typo3/sysext/core/bin/typo3 cache:flush
 ```
 
+> [!NOTE]
+> On Mittwald, restart the PHP process/app in mStudio if changes don't show up (OPcache).
+
 The module then appears under **Content → T3SB Builder** (icon shared with t3sbootstrap).
 
 ## Quick start
