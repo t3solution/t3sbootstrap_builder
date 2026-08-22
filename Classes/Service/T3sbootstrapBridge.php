@@ -7,6 +7,7 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use T3SBS\T3sbootstrap\Service\AssetPathService;
 use Doctrine\DBAL\ParameterType;
 
 /**
@@ -16,8 +17,8 @@ use Doctrine\DBAL\ParameterType;
  *   - We write into tx_t3sbootstrap_domain_model_config.custom_variables_scss
  *     and .custom_scss of the root config record via DataHandler.
  *   - t3sbootstrap's OutsourcedFiles hook then writes
- *     custom-variables-{uid}.scss / custom-{uid}.scss into
- *     EXT:t3sb_package/Resources/Public/T3SB-SCSS/ and rebuilds the include file.
+ *     custom-variables-{uid}.scss / custom-{uid}.scss into the directory
+ *     AssetPathService points at and rebuilds the include file.
  *   - The actual SCSS compile happens lazily via t3sbootstrap CompileService -> ScssParser.
  *
  * We therefore never call ScssParser directly; we just persist and let
@@ -30,12 +31,24 @@ final class T3sbootstrapBridge
     /** Same temp dir t3sbootstrap CompileService writes to. */
     private const CSS_TEMP_DIR = 'typo3temp/assets/t3sbootstrap/css/';
 
-    /** Where t3sbootstrap keeps the per-root custom SCSS files it imports when compiling. */
-    private const VARIABLES_DIR = 'EXT:t3sb_package/Resources/Public/T3SB-SCSS/';
-
     public function __construct(
         private readonly ConnectionPool $connectionPool,
+        private readonly AssetPathService $assetPathService,
     ) {}
+
+    /**
+     * Directory t3sbootstrap keeps the per-root custom SCSS in, relative to the
+     * public path and with a trailing slash.
+     *
+     * Asked from t3sbootstrap instead of hardcoded: the location moved from
+     * EXT:t3sb_package/Resources/Public/ to typo3temp/assets/t3sbootstrap/ in
+     * t3sbootstrap 5.3.50, and a second hardcoded copy here would silently
+     * drift apart again on the next move.
+     */
+    private function getVariablesDir(): string
+    {
+        return $this->assetPathService->getRelPath('T3SB-SCSS');
+    }
 
     /**
      * Find the root config record uid for a given root page.
@@ -108,11 +121,10 @@ final class T3sbootstrapBridge
             return ['Could not resolve root page for preview.'];
         }
 
-        $dirAbs = GeneralUtility::getFileAbsFileName(self::VARIABLES_DIR);
+        $dirAbs = $this->assetPathService->getPath('T3SB-SCSS');
         if ($dirAbs === '') {
             return ['Could not resolve T3SB-SCSS directory.'];
         }
-        GeneralUtility::mkdir_deep($dirAbs);
 
         // Separate preview-only source files (no backup needed; they are throwaway).
         $previewVars = rtrim($dirAbs, '/') . '/custom-variables-preview-' . $rootPageId . '.scss';
@@ -121,17 +133,18 @@ final class T3sbootstrapBridge
         GeneralUtility::writeFile($previewCustom, $customScss);
 
         // Separate include (compile entry point) importing the preview source files.
-        $bootstrapImport = 'EXT:t3sb_package/Resources/Public/T3SB-Bootstrap/Bootstrap/scss/bootstrap';
-        if (!file_exists(GeneralUtility::getFileAbsFileName($bootstrapImport . '.scss'))) {
+        $bootstrapAbs = $this->assetPathService->getPath('T3SB-Bootstrap/Bootstrap/scss') . 'bootstrap.scss';
+        if (!file_exists($bootstrapAbs)) {
             return ['Bootstrap SCSS sources not found; cannot compile preview.'];
         }
-        $includeDir = self::VARIABLES_DIR . 'Bootstrap/';
-        $includeAbs = GeneralUtility::getFileAbsFileName($includeDir . 'bootstrap-preview-' . $rootPageId . '.scss');
+        $includeAbs = $this->assetPathService->getPath('T3SB-SCSS/Bootstrap') . 'bootstrap-preview-' . $rootPageId . '.scss';
+        // Imports are relative to the include file in T3SB-SCSS/Bootstrap/, exactly
+        // like t3sbootstrap's own CustomScss command writes them. An EXT: or absolute
+        // path would be baked in and break as soon as the asset directory moves.
         $includeContent = "\n"
-            . '@import "' . self::VARIABLES_DIR . 'custom-variables-preview-' . $rootPageId . '";' . "\n"
-            . '@import "' . $bootstrapImport . '";' . "\n"
-            . '@import "' . self::VARIABLES_DIR . 'custom-preview-' . $rootPageId . '";' . "\n";
-        GeneralUtility::mkdir_deep(GeneralUtility::getFileAbsFileName($includeDir));
+            . '@import "../custom-variables-preview-' . $rootPageId . '";' . "\n"
+            . '@import "../../T3SB-Bootstrap/Bootstrap/scss/bootstrap";' . "\n"
+            . '@import "../custom-preview-' . $rootPageId . '";' . "\n";
         GeneralUtility::writeFile($includeAbs, $includeContent);
 
         // Compile ONLY the preview CSS via scssphp. Do not call t3sbootstrap's CompileService
@@ -149,7 +162,7 @@ final class T3sbootstrapBridge
      */
     private function writeCustomFile(string $fileName, string $content): void
     {
-        $dirAbs = GeneralUtility::getFileAbsFileName(self::VARIABLES_DIR);
+        $dirAbs = $this->assetPathService->getPath('T3SB-SCSS');
         if ($dirAbs === '') {
             return;
         }
@@ -188,27 +201,23 @@ final class T3sbootstrapBridge
             return;
         }
 
-        $varsDir = self::VARIABLES_DIR;
-        $includeDir = $varsDir . 'Bootstrap/';
-        $includeScss = $includeDir . 'bootstrap-' . $rootPageId . '.scss';
-        $includeAbs = GeneralUtility::getFileAbsFileName($includeScss);
+        $includeAbs = $this->assetPathService->getPath('T3SB-SCSS/Bootstrap') . 'bootstrap-' . $rootPageId . '.scss';
 
         // The include file (compile entry point) is normally created by t3sbootstrap's
-        // CLI command, which a backend save never runs. Create it ourselves if missing,
-        // mirroring the command's import order: custom-variables -> bootstrap -> custom.
-        if (!file_exists($includeAbs)) {
-            $bootstrapImport = 'EXT:t3sb_package/Resources/Public/T3SB-Bootstrap/Bootstrap/scss/bootstrap';
-            if (!file_exists(GeneralUtility::getFileAbsFileName($bootstrapImport . '.scss'))) {
-                // Bootstrap sources not present -> cannot compile here; leave to frontend.
-                return;
-            }
-            $includeContent = "\n"
-                . '@import "' . $varsDir . 'custom-variables-' . $rootPageId . '";' . "\n"
-                . '@import "' . $bootstrapImport . '";' . "\n"
-                . '@import "' . $varsDir . 'custom-' . $rootPageId . '";' . "\n";
-            GeneralUtility::mkdir_deep(GeneralUtility::getFileAbsFileName($includeDir));
-            GeneralUtility::writeFile($includeAbs, $includeContent);
+        // CLI command, which a backend save never runs. Write it ourselves, mirroring
+        // the command: relative imports, custom-variables -> bootstrap -> custom.
+        // Always rewritten, never only when missing - a file left over from an older
+        // version still carries that version's import paths.
+        $bootstrapAbs = $this->assetPathService->getPath('T3SB-Bootstrap/Bootstrap/scss') . 'bootstrap.scss';
+        if (!file_exists($bootstrapAbs)) {
+            // Bootstrap sources not present -> cannot compile here; leave to frontend.
+            return;
         }
+        $includeContent = "\n"
+            . '@import "../custom-variables-' . $rootPageId . '";' . "\n"
+            . '@import "../../T3SB-Bootstrap/Bootstrap/scss/bootstrap";' . "\n"
+            . '@import "../custom-' . $rootPageId . '";' . "\n";
+        GeneralUtility::writeFile($includeAbs, $includeContent);
 
         $serviceClass = 'T3SBS\\T3sbootstrap\\Service\\CompileService';
         if (class_exists($serviceClass)) {

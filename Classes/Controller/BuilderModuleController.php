@@ -109,6 +109,11 @@ class BuilderModuleController extends ActionController
         }
         $presetValuesJson = json_encode($presetValues, JSON_THROW_ON_ERROR);
 
+        // The plain Bootstrap defaults, so the editor can reset every field client-side
+        // when "- none -" is picked, and so switching presets always starts from a clean
+        // base instead of keeping leftovers of the previously loaded preset.
+        $defaultValuesJson = json_encode($this->variableService->getFlatDefaults(), JSON_THROW_ON_ERROR);
+
         // Frontend URL of the site's root page for the "Frontend" preview tab.
         $frontendUrl = '';
         try {
@@ -131,6 +136,7 @@ class BuilderModuleController extends ActionController
             'values' => $values,
             'presets' => $presetOptions,
             'presetValuesJson' => $presetValuesJson,
+            'defaultValuesJson' => $defaultValuesJson,
             'compiledCssUrl' => $compiledCssUrl,
             'selectedPreset' => $selectedPreset,
             'frontendUrl' => $frontendUrl,
