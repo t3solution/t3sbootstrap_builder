@@ -32,8 +32,9 @@
       <trans-unit id="edit.link.sass"><source>Bootstrap SASS variables</source></trans-unit>
       <trans-unit id="edit.preset.label"><source>Bootswatch preset (base)</source></trans-unit>
       <trans-unit id="edit.preset.load"><source>Load preset values</source></trans-unit>
-      <trans-unit id="edit.preset.none"><source>– none –</source></trans-unit>
-      <trans-unit id="edit.preset.hint"><source>Changing the preset pre-fills the fields below. Your own changes stay on top.</source></trans-unit>
+      <trans-unit id="edit.preset.none"><source>– Bootstrap default (no preset) –</source></trans-unit>
+      <trans-unit id="edit.preset.reset"><source>Reset to Bootstrap defaults</source></trans-unit>
+      <trans-unit id="edit.preset.hint"><source>Loading a preset fills the fields below from the Bootstrap defaults and then applies the preset on top. Pick &#8211; none &#8211; to go back to plain Bootstrap. Your additional custom SCSS is never touched.</source></trans-unit>
       <trans-unit id="edit.customscss.label"><source>Additional custom SCSS (after Bootstrap)</source></trans-unit>
       <trans-unit id="edit.btn.preview"><source>Preview</source></trans-unit>
       <trans-unit id="edit.btn.publish"><source>Publish</source></trans-unit>

@@ -20,9 +20,9 @@
 
     <div class="bb-presetpicker">
         <label><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.label"/></label>
-        <div class="bb-preset-row" data-preset-values="{presetValuesJson -> f:format.htmlspecialchars()}">
+        <div class="bb-preset-row" data-preset-values="{presetValuesJson -> f:format.htmlspecialchars()}" data-default-values="{defaultValuesJson -> f:format.htmlspecialchars()}">
             <f:form.select name="basePresetPicker" value="{selectedPreset}" options="{presets}" prependOptionLabel="{f:translate(key:'LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.none')}" prependOptionValue="" class="form-select" additionalAttributes="{id: 'bb-preset-select'}"/>
-            <button type="button" class="btn btn-default" id="bb-preset-load"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.load"/></button>
+            <button type="button" class="btn btn-default" id="bb-preset-load" data-label-load="{f:translate(key:'LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.load')}" data-label-reset="{f:translate(key:'LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.reset')}"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.load"/></button>
         </div>
         <small class="text-muted"><f:translate key="LLL:EXT:t3sbootstrap_builder/Resources/Private/Language/locallang.xlf:edit.preset.hint"/></small>
     </div>

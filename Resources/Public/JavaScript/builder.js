@@ -602,30 +602,80 @@
     });
 
     var presetBtn = document.getElementById("bb-preset-load");
-    if (presetBtn) {
+    var presetSel = document.getElementById("bb-preset-select");
+    if (presetBtn && presetSel) {
+      var presetRow = document.querySelector(".bb-preset-row");
+
+      var readJsonAttr = function (el, attr) {
+        if (!el) return {};
+        try { return JSON.parse(el.getAttribute(attr) || "{}") || {}; } catch (e) { return {}; }
+      };
+
+      // Writing a value has to respect the widget: a checkbox has no meaningful .value,
+      // and a <select> silently keeps its old selection when the value has no option.
+      var setFieldValue = function (el, value) {
+        var str = value === null || value === undefined ? "" : String(value);
+        if (el.tagName === "SELECT") {
+          var known = Array.prototype.some.call(el.options, function (o) { return o.value === str; });
+          // The empty option carries the default label, so "" IS the default here.
+          el.value = known ? str : "";
+        } else if (el.type === "checkbox") {
+          el.checked = (str === "true" || str === "1");
+        } else {
+          el.value = str;
+        }
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+
+      var basePresetField = document.querySelector("input[name='tx_t3sbootstrapbuilder_web_t3sbootstrapbuilder[basePreset]'], input[name='basePreset']");
+
+      // "- none -" resets, a preset name loads: say so on the button. And as long as the
+      // select does not match what the form would actually submit, highlight the button -
+      // picking an entry alone changes nothing until it is applied.
+      var syncPresetButton = function () {
+        var loadLabel = presetBtn.getAttribute("data-label-load");
+        var resetLabel = presetBtn.getAttribute("data-label-reset");
+        if (loadLabel && resetLabel) {
+          presetBtn.textContent = presetSel.value ? loadLabel : resetLabel;
+        }
+        var pending = basePresetField ? (presetSel.value !== basePresetField.value) : false;
+        presetBtn.classList.toggle("btn-primary", pending);
+        presetBtn.classList.toggle("btn-default", !pending);
+      };
+      presetSel.addEventListener("change", syncPresetButton);
+      syncPresetButton();
+
       presetBtn.addEventListener("click", function () {
-        var sel = document.getElementById("bb-preset-select");
-        var row = document.querySelector(".bb-preset-row");
-        if (!sel || !row) return;
-        var preset = sel.value || "";
+        var preset = presetSel.value || "";
+        var defaults = readJsonAttr(presetRow, "data-default-values");
+        var all = readJsonAttr(presetRow, "data-preset-values");
+        var presetVals = preset ? (all[preset] || {}) : {};
+        var key;
 
-        var all = {};
-        try { all = JSON.parse(row.getAttribute("data-preset-values") || "{}"); } catch (e) { all = {}; }
-        var vals = all[preset] || {};
+        // ALWAYS start from the plain Bootstrap defaults and lay the preset on top.
+        // Without the reset, a preset only ever added values: keys it does not define
+        // kept whatever the previously loaded preset had put there, and "- none -"
+        // could never get back to stock Bootstrap at all.
+        var vals = {};
+        for (key in defaults) {
+          if (Object.prototype.hasOwnProperty.call(defaults, key)) vals[key] = defaults[key];
+        }
+        for (key in presetVals) {
+          if (Object.prototype.hasOwnProperty.call(presetVals, key)) vals[key] = presetVals[key];
+        }
 
-        // Fill each editor field whose key matches a resolved preset value.
         document.querySelectorAll("[data-bb-key]").forEach(function (el) {
-          var key = el.getAttribute("data-bb-key");
-          if (Object.prototype.hasOwnProperty.call(vals, key)) {
-            el.value = vals[key];
-            el.dispatchEvent(new Event("input", { bubbles: true }));
-            el.dispatchEvent(new Event("change", { bubbles: true }));
+          var k = el.getAttribute("data-bb-key");
+          if (Object.prototype.hasOwnProperty.call(vals, k)) {
+            setFieldValue(el, vals[k]);
           }
         });
 
         // Remember the chosen preset for the Apply form (hidden basePreset field).
-        var hidden = document.querySelector("input[name='tx_t3sbootstrapbuilder_web_t3sbootstrapbuilder[basePreset]'], input[name='basePreset']");
-        if (hidden) hidden.value = preset;
+        // Empty means: do not append the preset's _bootswatch.scss after Bootstrap.
+        if (basePresetField) basePresetField.value = preset;
+        syncPresetButton();
       });
     }
 
