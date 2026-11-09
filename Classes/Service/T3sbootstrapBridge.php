@@ -28,9 +28,6 @@ final class T3sbootstrapBridge
 {
     private const CONFIG_TABLE = 'tx_t3sbootstrap_domain_model_config';
 
-    /** Same temp dir t3sbootstrap CompileService writes to. */
-    private const CSS_TEMP_DIR = 'typo3temp/assets/t3sbootstrap/css/';
-
     public function __construct(
         private readonly ConnectionPool $connectionPool,
         private readonly AssetPathService $assetPathService,
@@ -42,8 +39,9 @@ final class T3sbootstrapBridge
      *
      * Asked from t3sbootstrap instead of hardcoded: the location moved from
      * EXT:t3sb_package/Resources/Public/ to typo3temp/assets/t3sbootstrap/ in
-     * t3sbootstrap 5.3.50, and a second hardcoded copy here would silently
-     * drift apart again on the next move.
+     * t3sbootstrap 5.3.50, and since 5.3.59 the extension configuration
+     * "assetDir" can move it again - a second hardcoded copy here would
+     * silently drift apart.
      */
     private function getVariablesDir(): string
     {
@@ -149,7 +147,7 @@ final class T3sbootstrapBridge
 
         // Compile ONLY the preview CSS via scssphp. Do not call t3sbootstrap's CompileService
         // and do not purge the frontend's compiled CSS.
-        $outFile = GeneralUtility::getFileAbsFileName(self::CSS_TEMP_DIR) . 'bb-preview-' . $rootPageId . '.css';
+        $outFile = $this->assetPathService->getPath('css') . 'bb-preview-' . $rootPageId . '.css';
         $this->compileWithScssphp($includeAbs, $outFile);
 
         return [];
@@ -233,13 +231,13 @@ final class T3sbootstrapBridge
         // ALWAYS build our own preview CSS with a FIXED filename, so the backend preview
         // loads a known file instead of guessing "newest in dir". This is the authoritative
         // file for the module preview.
-        $outFile = GeneralUtility::getFileAbsFileName(self::CSS_TEMP_DIR) . 'bb-preview-' . $rootPageId . '.css';
+        $outFile = $this->assetPathService->getPath('css') . 'bb-preview-' . $rootPageId . '.css';
         $this->compileWithScssphp($includeAbs, $outFile);
     }
 
     private function compiledCssExists(): bool
     {
-        $dir = GeneralUtility::getFileAbsFileName(self::CSS_TEMP_DIR);
+        $dir = $this->assetPathService->getPath('css');
         if ($dir === '' || !is_dir($dir)) {
             return false;
         }
@@ -296,7 +294,7 @@ final class T3sbootstrapBridge
      */
     private function purgeCompiledCss(): void
     {
-        $dir = GeneralUtility::getFileAbsFileName(self::CSS_TEMP_DIR);
+        $dir = $this->assetPathService->getPath('css');
         if ($dir === '' || !is_dir($dir)) {
             return;
         }
