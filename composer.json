@@ -3,6 +3,11 @@
     "type": "typo3-cms-extension",
     "description": "Visual Bootstrap 5.3 theme builder for TYPO3 with Bootswatch presets and SCSS export. Compiles via EXT:t3sbootstrap.",
     "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/t3solution/t3sbootstrap_builder",
+    "support": {
+        "issues": "https://github.com/t3solution/t3sbootstrap_builder/issues",
+        "source": "https://github.com/t3solution/t3sbootstrap_builder"
+    },
     "keywords": ["TYPO3", "bootstrap", "bootswatch", "scss", "theme"],
     "authors": [
         {
